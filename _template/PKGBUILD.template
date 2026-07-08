@@ -1,0 +1,32 @@
+# Maintainer: ##PACKAGER##
+# SPDX-FileCopyrightText: Arch Linux contributors
+# SPDX-License-Identifier: 0BSD
+
+pkgname=##PKGNAME##
+pkgver=###
+pkgrel=1
+pkgdesc='###'
+url='###'
+arch=('x86_64')
+depends=()
+makedepends=()
+conflicts=()
+provides=()
+license=('###')
+
+source=(
+	###
+)
+
+b2sums=()
+
+package() {
+	# Not needed if provided by `licenses`. Very likely unless it's MIT or BSD or ISC. `ls /usr/share/licenses/spdx`
+	install -Dm644 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
+
+##GITPKGVER##
+pkgver() {
+	cd "$pkgname"
+	git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}

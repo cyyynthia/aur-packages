@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Arch Linux contributors
+# SPDX-License-Identifier: 0BSD
+
+root = true
+
+[*]
+tab_width = 4
+indent_size = 4
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+
+[*.{bat,cmd}]
+end_of_line = crlf
+
+[*.{yml,yaml}]
+# YAML: Yet Another Mediocre Language
+indent_style=space
+indent_size=2

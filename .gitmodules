@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Arch Linux contributors
+# SPDX-License-Identifier: 0BSD
+
+[submodule "vmaware"]
+	path = vmaware
+	url = ssh://aur@aur.archlinux.org/vmaware
+[submodule "vmaware-bin"]
+	path = vmaware-bin
+	url = ssh://aur@aur.archlinux.org/vmaware-bin
+[submodule "vmaware-git"]
+	path = vmaware-git
+	url = ssh://aur@aur.archlinux.org/vmaware-git
