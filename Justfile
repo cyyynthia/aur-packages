@@ -12,12 +12,10 @@ packages_updatable := `git submodule foreach -q "if [[ -f .nvchecker.toml ]]; th
 [doc("Initialises a package")]
 init package:
 	[[ ! -e {{package}} ]]
-	mkdir -p {{package}}/LICENSES
+	mkdir -p {{package}}
 	git -C {{package}} init -b master
-	cp _template/gitignore.template {{package}}/.gitignore
-	cp .gitattributes {{package}}/.gitattributes
-	cp LICENSE {{package}}/LICENSE
-	ln -s ../LICENSE {{package}}/LICENSES/0BSD.txt
+	just gitfiles {{package}}
+	just license {{package}}
 	sed _template/PKGBUILD.template \
 		-e 's/##PACKAGER##/{{packager}}' \
 		-e 's/##PKGNAME##/{{package}}' \
@@ -26,6 +24,12 @@ init package:
 [doc("Clones an AUR package")]
 clone package:
 	git submodule add ssh://aur@aur.archlinux.org/{{package}}
+
+[doc("Adopts an orphaned AUR package")]
+adopt package:
+	ssh aur@aur.archlinux.org adopt {{package}}
+	git submodule add ssh://aur@aur.archlinux.org/{{package}}
+	git commit -am "adopt {{package}}"
 
 [doc("Updates all submodules to latest")]
 sync:
@@ -51,6 +55,16 @@ clean:
 licenses:
 	pkgctl license check {{packages_list}}
 	reuse lint -q
+
+[doc("Adds LICENSE files to the package")]
+license package:
+	mkdir -p {{package}}/LICENSES
+	cp LICENSE {{package}}/LICENSE
+	ln -s ../LICENSE {{package}}/LICENSES/0BSD.txt
+
+[doc("Adds .git* files to the package")]
+gitfiles package:
+	cp _template/gitignore.template {{package}}/.gitignore
 
 [doc("Checks for updates using nvchecker")]
 updates:

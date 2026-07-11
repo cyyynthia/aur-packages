@@ -10,3 +10,6 @@
 [submodule "vmaware-git"]
 	path = vmaware-git
 	url = ssh://aur@aur.archlinux.org/vmaware-git
+[submodule "dma"]
+	path = dma
+	url = ssh://aur@aur.archlinux.org/dma
