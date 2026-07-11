@@ -29,7 +29,7 @@ clone package:
 adopt package:
 	ssh aur@aur.archlinux.org adopt {{package}}
 	git submodule add ssh://aur@aur.archlinux.org/{{package}}
-	git commit -am "adopt {{package}}"
+	git commit -auall -m "adopt {{package}}"
 
 [doc("Updates all submodules to latest")]
 sync:
@@ -37,8 +37,10 @@ sync:
 
 [doc("Commits changes in a package (and in the workspace)")]
 commit package *message:
-	git -C {{package}} commit -am "{{message}}"
-	git commit -am "{{package}}: {{message}}"
+	git -C {{package}} add .
+	git -C {{package}} commit -m "{{message}}"
+	git add .
+	git commit -m "{{package}}: {{message}}"
 
 [doc("Push all local changes to the AUR")]
 push:
