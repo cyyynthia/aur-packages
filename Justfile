@@ -42,6 +42,13 @@ commit package *message:
 	git add .
 	git commit -m "{{package}}: {{message}}"
 
+[doc("Amends changes in a package (and in the workspace)")]
+amend package:
+	git -C {{package}} add .
+	git -C {{package}} commit --amend --no-edit
+	git add .
+	git commit --amend --no-edit
+
 [doc("Push all local changes to the AUR")]
 push:
 	git submodule foreach "git push"
