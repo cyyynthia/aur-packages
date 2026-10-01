@@ -16,3 +16,6 @@
 [submodule "upm"]
 	path = upm
 	url = ./upm
+[submodule "upm-git"]
+	path = upm-git
+	url = ./upm-git

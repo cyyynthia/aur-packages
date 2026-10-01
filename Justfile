@@ -9,13 +9,16 @@ packager := `sh -c 'source /usr/share/makepkg/util/config.sh && source_makepkg_c
 packages_list := `git submodule foreach -q "echo \"'\$name'\"" | xargs -d '\n'`
 packages_updatable := `git submodule foreach -q "if [[ -f .nvchecker.toml ]]; then echo \"'\$name'\"; fi" | xargs -d'\n'`
 
+_setup-git-pkg package:
+	git -C {{package}} init -b master
+	git -C {{package}} remote add origin ssh://aur@aur.archlinux.org/{{package}}
+	git -C {{package}} fetch
+
 [doc("Initialises a package")]
 init package:
 	@[[ ! -e {{package}} ]]
 	mkdir -p {{package}}
-	git -C {{package}} init -b master
-	git -C {{package}} remote add origin ssh://aur@aur.archlinux.org/{{package}}
-	git -C {{package}} fetch
+	@just _setup-git-pkg {{package}}
 	@just gitfiles {{package}}
 	@just license {{package}}
 	cp _template/REUSE.toml.template {{package}}/REUSE.toml
@@ -28,6 +31,16 @@ init package:
 [doc("Clones an AUR package")]
 clone package:
 	git submodule add ssh://aur@aur.archlinux.org/{{package}}
+
+[doc("Creates a duplicate of a package. Useful for creating `-git` and sometimes `-bin` variants.")]
+duplicate package new-package:
+	@[[ ! -e {{new-package}} ]]
+	cp -r {{package}} {{new-package}}
+	@rm -rf {{new-package}}/.git
+	@just _setup-git-pkg {{new-package}}
+	sed -i {{new-package}}/PKGBUILD \
+		-e 's/pkgname={{package}}/_pkgname={{package}}\npkgname={{new-package}}/' \
+		-e 's/\$pkgname/\$_pkgname/g'
 
 [doc("Adopts an orphaned AUR package")]
 adopt package:
@@ -44,7 +57,7 @@ sync:
 init-commit package:
 	git -C {{package}} add .
 	git -C {{package}} commit -m "initial commit"
-	git submodule add ./upm upm
+	git submodule add ./{{package}} {{package}}
 	git submodule absorbgitdirs
 	git add .
 	git commit -m "{{package}}: initial commit"
