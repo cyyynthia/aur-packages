@@ -11,15 +11,19 @@ packages_updatable := `git submodule foreach -q "if [[ -f .nvchecker.toml ]]; th
 
 [doc("Initialises a package")]
 init package:
-	[[ ! -e {{package}} ]]
+	@[[ ! -e {{package}} ]]
 	mkdir -p {{package}}
 	git -C {{package}} init -b master
-	just gitfiles {{package}}
-	just license {{package}}
+	git -C {{package}} remote add origin ssh://aur@aur.archlinux.org/{{package}}
+	git -C {{package}} fetch
+	@just gitfiles {{package}}
+	@just license {{package}}
+	cp _template/REUSE.toml.template {{package}}/REUSE.toml
 	sed _template/PKGBUILD.template \
-		-e 's/##PACKAGER##/{{packager}}' \
-		-e 's/##PKGNAME##/{{package}}' \
-		-e {{ if package =~ '\-git$' { 's/##GITPKGVER##//' } else { '/##GITPKGVER##/,+4d' } }}
+		-e 's/##PACKAGER##/{{packager}}/' \
+		-e 's/##PKGNAME##/{{package}}/' \
+		-e {{ if package =~ '\-git$' { 's/##GITPKGVER##//' } else { '/##GITPKGVER##/,+4d' } }} \
+		> {{package}}/PKGBUILD
 
 [doc("Clones an AUR package")]
 clone package:
@@ -27,6 +31,7 @@ clone package:
 
 [doc("Adopts an orphaned AUR package")]
 adopt package:
+	{{ error("adoption requires filing a request, cannot set required comment via ssh") }}
 	ssh aur@aur.archlinux.org adopt {{package}}
 	git submodule add ssh://aur@aur.archlinux.org/{{package}}
 	git commit -auall -m "adopt {{package}}"
@@ -34,6 +39,15 @@ adopt package:
 [doc("Updates all submodules to latest")]
 sync:
 	git submodule update --recursive --remote
+
+[doc("Creates the initial commit of a package and sets up the submodule in the workspace")]
+init-commit package:
+	git -C {{package}} add .
+	git -C {{package}} commit -m "initial commit"
+	git submodule add ./upm upm
+	git submodule absorbgitdirs
+	git add .
+	git commit -m "{{package}}: initial commit"
 
 [doc("Commits changes in a package (and in the workspace)")]
 commit package *message:

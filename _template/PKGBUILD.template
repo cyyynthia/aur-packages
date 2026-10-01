@@ -15,13 +15,17 @@ provides=()
 license=('###')
 
 source=(
-	###
+	# TODO
 )
 
-b2sums=()
+b2sums=('...')
+
+build() {
+	# TODO
+}
 
 package() {
-	# Not needed if provided by `licenses`. Very likely unless it's MIT or BSD or ISC. `ls /usr/share/licenses/spdx`
+	# TODO: Not needed if provided by `licenses`. Very likely unless it's MIT or BSD or ISC. See: `ls /usr/share/licenses/spdx`
 	install -Dm644 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
 
