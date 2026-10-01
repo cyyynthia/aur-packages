@@ -13,3 +13,6 @@
 [submodule "dma"]
 	path = dma
 	url = ssh://aur@aur.archlinux.org/dma
+[submodule "upm"]
+	path = upm
+	url = ./upm
