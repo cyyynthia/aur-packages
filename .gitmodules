@@ -15,7 +15,10 @@
 	url = ssh://aur@aur.archlinux.org/dma
 [submodule "upm"]
 	path = upm
-	url = ./upm
+	url = ssh://aur@aur.archlinux.org/upm
 [submodule "upm-git"]
 	path = upm-git
-	url = ./upm-git
+	url = ssh://aur@aur.archlinux.org/upm-git
+[submodule "zsh-patina"]
+	path = zsh-patina
+	url = ssh://aur@aur.archlinux.org/zsh-patina

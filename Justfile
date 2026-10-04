@@ -58,6 +58,8 @@ init-commit package:
 	git -C {{package}} add .
 	git -C {{package}} commit -m "initial commit"
 	git submodule add ./{{package}} {{package}}
+	git config -f .gitmodules submodule.{{package}}.url ssh://aur@aur.archlinux.org/{{package}}
+	rm -rf .git/modules/{{package}}
 	git submodule absorbgitdirs
 	git add .
 	git commit -m "{{package}}: initial commit"
