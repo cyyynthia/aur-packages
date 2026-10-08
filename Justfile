@@ -79,8 +79,13 @@ amend package:
 	git commit --amend --no-edit
 
 [doc("Push all local changes to the AUR")]
-push:
+push-all:
 	git submodule foreach "git push"
+	git push
+
+[doc("Push local changes to the AUR")]
+push package:
+	git -C {{package}} push
 	git push
 
 [doc("Cleans the workspace")]
@@ -107,6 +112,17 @@ gitfiles package:
 [doc("Checks for updates using nvchecker")]
 updates:
 	pkgctl version check {{packages_updatable}}
+
+[doc("Updates a package via nvchecker. Automatically commits and pushes if the package builds")]
+update package:
+	pkgctl version upgrade {{package}}
+	pkgctl build {{package}}
+	@just commit {{package}} "v$(source {{package}}/PKGBUILD; echo $pkgver)"
+	@just push {{package}}
+
+[doc("Updates a package via nvchecker. Does not commit or push the package")]
+update-only package:
+	pkgctl version upgrade {{package}}
 
 alias c := commit
 alias s := sync
